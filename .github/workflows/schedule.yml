@@ -19,3 +19,6 @@ jobs:
           GIST_ID: bce069f1479aba28dacea0768b89ae04
           USER_ID: 416843684
           USER_TOKEN: ${{ secrets.USER_TOKEN }}
+          UPDATE_README: true
+          UPDATE_README_OWNER: Zolyn
+          UPDATE_README_REPO: Zolyn
