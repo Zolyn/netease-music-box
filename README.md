@@ -1,7 +1,7 @@
 <p align="center">
   <img src="https://github.com/Leecason/netease-music-box/blob/master/assets/gist_preview.png" width="550">
   <h2 align="center">Netease Music Box</h2>
-  <p align="center">将你最近一周的网易云音乐的听歌记录更新到 Gist</p>
+  <p align="center">将你最近一周的网易云音乐的听歌记录更新到 Gist 和 README</p>
 </p>
 
 ---
@@ -64,7 +64,7 @@
 
 - 基于 [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) 获取听歌记录
 - 基于 Github API 更新 Gist 和 README
-- 使用 Github Actions 自动更新 Gist 和 README
+- 使用 Github Actions 自动更新 Gist 和 README （当数据一致时，README 将不会被更新，注：只有 README 支持此功能）
 
 ## 📄 开源协议
 
