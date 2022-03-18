@@ -87,9 +87,10 @@ const replaceReg = new RegExp(`${startSection}[\\s\\S]+${endSection}`, 'g');
     const readme = await octokit.repos.getContent({
       owner: updateReadmeOwner,
       repo: updateReadmeRepo,
-      path: '/README.md',
+      path: 'README.md',
     });
 
+    console.log(readme);
     const new_readme = readme.content.replace(replaceReg, `${startSection}${lines}${endSection}`)
     const hash = createHash('sha1');
     hash.update(new_readme);
