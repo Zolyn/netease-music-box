@@ -84,13 +84,13 @@ const replaceReg = new RegExp(`${startSection}[\\s\\S]+${endSection}`, 'g');
   }
 
   if (updateReadme === 'true' && updateReadmeOwner && updateReadmeRepo) {
-    const readme = await octokit.repos.getContent({
+    const { data } = await octokit.repos.getContent({
       owner: updateReadmeOwner,
       repo: updateReadmeRepo,
       path: 'README.md',
     });
 
-    console.log(readme);
+    const readme = Buffer.from(data.content, 'base64').toString();
     const new_readme = readme.content.replace(replaceReg, `${startSection}${lines}${endSection}`)
     const hash = createHash('sha1');
     hash.update(new_readme);
@@ -100,9 +100,9 @@ const replaceReg = new RegExp(`${startSection}[\\s\\S]+${endSection}`, 'g');
       await octokit.repos.createOrUpdateFileContents({
         owner: updateReadmeOwner,
         repo: updateReadmeRepo,
-        path: '/README.md',
+        path: 'README.md',
         message: 'Update music statistics',
-        content: new_readme,
+        content: Buffer.from(new_readme).toString('base64'),
         sha,
       })
     } catch (error) {
