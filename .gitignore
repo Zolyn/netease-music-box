@@ -8,3 +8,4 @@ node_modules/
 # Unconfigured Editors
 .vscode/
 .idea
+.lh

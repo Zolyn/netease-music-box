@@ -1,4 +1,5 @@
 require('dotenv').config();
+const { createHash } = require('crypto');
 const { Octokit } = require('@octokit/rest');
 const { user_record } = require('NeteaseCloudMusicApi');
 
@@ -7,7 +8,14 @@ const {
   GH_TOKEN: githubToken,
   USER_ID: userId,
   USER_TOKEN: userToken,
+  UPDATE_README: updateReadme,
+  UPDATE_README_OWNER: updateReadmeOwner,
+  UPDATE_README_REPO: updateReadmeRepo,
 } = process.env;
+
+const startSection = "<!-- netease-music-box start -->";
+const endSection = "<!-- netease-music-box end -->"
+const replaceReg = new RegExp(`${startSection}[\\s\\S]+${endSection}`, 'g');
 
 (async () => {
   /**
@@ -46,16 +54,17 @@ const {
     ];
 
     return [...prev, line.join(' ')];
-  }, []);
+  }, []).join('\n');
 
   /**
    * Finally, write into gist
    */
 
+   const octokit = new Octokit({
+    auth: `token ${githubToken}`,
+  });
+
   try {
-    const octokit = new Octokit({
-      auth: `token ${githubToken}`,
-    });
     const gist = await octokit.gists.get({
       gist_id: gistId,
     });
@@ -66,11 +75,37 @@ const {
       files: {
         [filename]: {
           filename: `🎵 My last week in music`,
-          content: lines.join('\n'),
+          content: lines,
         },
       },
     });
   } catch (error) {
     console.error(`Unable to update gist\n${error}`);
+  }
+
+  if (updateReadme === 'true' && updateReadmeOwner && updateReadmeRepo) {
+    const readme = await octokit.repos.getContent({
+      owner: updateReadmeOwner,
+      repo: updateReadmeRepo,
+      path: '/README.md',
+    });
+
+    const new_readme = readme.content.replace(replaceReg, `${startSection}${lines}${endSection}`)
+    const hash = createHash('sha1');
+    hash.update(new_readme);
+    const sha = hash.digest('hex');
+
+    try {
+      await octokit.repos.createOrUpdateFileContents({
+        owner: updateReadmeOwner,
+        repo: updateReadmeRepo,
+        path: '/README.md',
+        message: 'Update music statistics',
+        content: new_readme,
+        sha,
+      })
+    } catch (error) {
+      console.error(`Unable to update readme\n${error}`);
+    }
   }
 })();
