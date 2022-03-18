@@ -91,6 +91,11 @@ const replaceReg = new RegExp(`${startSection}[\\s\\S]+${endSection}`, 'g');
     const readme = Buffer.from(data.content, 'base64').toString();
     const new_readme = Buffer.from(readme.replace(replaceReg, `${startSection}\n\`\`\`text\n${lines}\n\`\`\`\n${endSection}`)).toString('base64');
 
+    if (readme === new_readme) {
+      console.log('No need to update readme');
+      return;
+    }
+
     try {
       await octokit.repos.createOrUpdateFileContents({
         owner: updateReadmeOwner,
