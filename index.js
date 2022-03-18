@@ -91,7 +91,7 @@ const replaceReg = new RegExp(`${startSection}[\\s\\S]+${endSection}`, 'g');
     });
 
     const readme = Buffer.from(data.content, 'base64').toString();
-    const new_readme = readme.replace(replaceReg, `${startSection}${lines}${endSection}`)
+    const new_readme = Buffer.from(readme.replace(replaceReg, `${startSection}${lines}${endSection}`)).toString('base64');
     const hash = createHash('sha1');
     hash.update(new_readme);
     const sha = hash.digest('hex');
@@ -102,7 +102,7 @@ const replaceReg = new RegExp(`${startSection}[\\s\\S]+${endSection}`, 'g');
         repo: updateReadmeRepo,
         path: 'README.md',
         message: 'Update music statistics',
-        content: Buffer.from(new_readme).toString('base64'),
+        content: new_readme,
         sha,
       })
     } catch (error) {
