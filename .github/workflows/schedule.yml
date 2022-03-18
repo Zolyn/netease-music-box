@@ -22,3 +22,4 @@ jobs:
           UPDATE_README: true
           UPDATE_README_OWNER: Zolyn
           UPDATE_README_REPO: Zolyn
+          LIST_LENGTH: 10
