@@ -10,6 +10,7 @@ const {
   UPDATE_README: updateReadme,
   UPDATE_README_OWNER: updateReadmeOwner,
   UPDATE_README_REPO: updateReadmeRepo,
+  LIST_LENGTH: listLength,
 } = process.env;
 
 const startSection = "<!-- netease-music-box start -->";
@@ -37,15 +38,13 @@ const replaceReg = new RegExp(`${startSection}[\\s\\S]+${endSection}`, 'g');
     totalPlayCount += data.playCount;
   });
 
-  const icon = ['🥇', '🥈', '🥉', '', '']
-
-  const lines = weekData.slice(0, 5).reduce((prev, cur, index) => {
+  const lines = weekData.slice(0, parseInt(listLength, 10) || 5).reduce((prev, cur, index) => {
     const playCount = cur.playCount;
     const artists = cur.song.ar.map(a => a.name);
     let name = `${cur.song.name} - ${artists.join('/')}`;
 
     const line = [
-      icon[index].padEnd(2),
+      `${index + 1}.`,
       name,
       ' · ',
       `${playCount}`,
@@ -90,7 +89,7 @@ const replaceReg = new RegExp(`${startSection}[\\s\\S]+${endSection}`, 'g');
     });
 
     const readme = Buffer.from(data.content, 'base64').toString();
-    const new_readme = Buffer.from(readme.replace(replaceReg, `\`\`\`text\n${startSection}${lines}${endSection}\n\`\`\`\n`)).toString('base64');
+    const new_readme = Buffer.from(readme.replace(replaceReg, `${startSection}\n\`\`\`text\n${lines}\n\`\`\`\n${endSection}`)).toString('base64');
 
     try {
       await octokit.repos.createOrUpdateFileContents({
