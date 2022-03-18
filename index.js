@@ -91,7 +91,7 @@ const replaceReg = new RegExp(`${startSection}[\\s\\S]+${endSection}`, 'g');
     });
 
     const readme = Buffer.from(data.content, 'base64').toString();
-    const new_readme = readme.content.replace(replaceReg, `${startSection}${lines}${endSection}`)
+    const new_readme = readme.replace(replaceReg, `${startSection}${lines}${endSection}`)
     const hash = createHash('sha1');
     hash.update(new_readme);
     const sha = hash.digest('hex');
