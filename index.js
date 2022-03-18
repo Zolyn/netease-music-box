@@ -91,10 +91,10 @@ const replaceReg = new RegExp(`${startSection}[\\s\\S]+${endSection}`, 'g');
     });
 
     const readme = Buffer.from(data.content, 'base64').toString();
-    const new_readme = readme.replace(replaceReg, `${startSection}${lines}${endSection}`);
-    const hash = createHash('sha1');
-    hash.update(Buffer.from(new_readme).toString('base64'));
-    const sha = hash.digest('hex');
+    const new_readme = Buffer.from(readme.replace(replaceReg, `${startSection}${lines}${endSection}`)).toString('base64');
+    // const hash = createHash('sha1');
+    // hash.update(new_readme);
+    // const sha = hash.digest('hex');
 
     try {
       await octokit.repos.createOrUpdateFileContents({
@@ -103,7 +103,7 @@ const replaceReg = new RegExp(`${startSection}[\\s\\S]+${endSection}`, 'g');
         path: 'README.md',
         message: 'Update music statistics',
         content: new_readme,
-        sha,
+        sha: data.sha,
       })
     } catch (error) {
       console.error(`Unable to update readme\n${error}`);
