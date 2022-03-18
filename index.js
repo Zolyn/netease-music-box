@@ -13,6 +13,7 @@ const {
   LIST_LENGTH: listLength,
 } = process.env;
 
+const TITLE = '🎵 My last week in music';
 const startSection = "<!-- netease-music-box start -->";
 const endSection = "<!-- netease-music-box end -->"
 const replaceReg = new RegExp(`${startSection}[\\s\\S]+${endSection}`, 'g');
@@ -72,7 +73,7 @@ const replaceReg = new RegExp(`${startSection}[\\s\\S]+${endSection}`, 'g');
       gist_id: gistId,
       files: {
         [filename]: {
-          filename: `🎵 My last week in music`,
+          filename: TITLE,
           content: lines,
         },
       },
@@ -82,6 +83,9 @@ const replaceReg = new RegExp(`${startSection}[\\s\\S]+${endSection}`, 'g');
   }
 
   if (updateReadme === 'true' && updateReadmeOwner && updateReadmeRepo) {
+    const gistLink = `#### <a href="https://gist.github.com/${gistId}" target="_blank">${TITLE}</a>\n`;
+    const footer = `Powered by [Zolyn/netease-music-box](https://github.com/Zolyn/netease-music-box) .\n`
+
     const { data } = await octokit.repos.getContent({
       owner: updateReadmeOwner,
       repo: updateReadmeRepo,
@@ -89,7 +93,7 @@ const replaceReg = new RegExp(`${startSection}[\\s\\S]+${endSection}`, 'g');
     });
 
     const readme = Buffer.from(data.content, 'base64').toString();
-    const new_readme = Buffer.from(readme.replace(replaceReg, `${startSection}\n\`\`\`text\n${lines}\n\`\`\`\n${endSection}`)).toString('base64');
+    const new_readme = Buffer.from(readme.replace(replaceReg, `${startSection}\n${gistLink}\`\`\`text\n${lines}\n\`\`\`\n${footer}${endSection}`)).toString('base64');
 
     if (readme === new_readme) {
       console.log('No need to update readme');
