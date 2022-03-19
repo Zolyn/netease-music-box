@@ -33,12 +33,6 @@ const replaceReg = new RegExp(`${startSection}[\\s\\S]+${endSection}`, 'g');
    * Second, get week play data and parse into song/plays diagram
    */
 
-  let totalPlayCount = 0;
-  const { weekData } = record.body;
-  weekData.forEach(data => {
-    totalPlayCount += data.playCount;
-  });
-
   const lines = weekData.slice(0, parseInt(listLength, 10) || 5).reduce((prev, cur, index) => {
     const playCount = cur.playCount;
     const artists = cur.song.ar.map(a => a.name);
@@ -93,9 +87,10 @@ const replaceReg = new RegExp(`${startSection}[\\s\\S]+${endSection}`, 'g');
     });
 
     const readme = Buffer.from(data.content, 'base64').toString();
-    const new_readme = Buffer.from(readme.replace(replaceReg, `${startSection}\n${gistLink}\`\`\`text\n${lines}\n\`\`\`\n${footer}${endSection}`)).toString('base64');
-
-    if (readme === new_readme) {
+    const matched_section = readme.match(replaceReg);
+    const replace_section = `${startSection}\n${gistLink}\`\`\`text\n${lines}\n\`\`\`\n${footer}${endSection}`;
+    
+    if (matched_section === replace_section) {
       console.log('No need to update readme');
       return;
     }
@@ -106,7 +101,7 @@ const replaceReg = new RegExp(`${startSection}[\\s\\S]+${endSection}`, 'g');
         repo: updateReadmeRepo,
         path: 'README.md',
         message: 'Update music statistics',
-        content: new_readme,
+        content: Buffer.from(readme.replace(replaceReg, replace_section)).toString('base64'),
         sha: data.sha,
       })
     } catch (error) {
