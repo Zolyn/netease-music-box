@@ -33,6 +33,8 @@ const replaceReg = new RegExp(`${startSection}[\\s\\S]+${endSection}`, 'g');
    * Second, get week play data and parse into song/plays diagram
    */
 
+  const { weekData } = record.body;
+
   const lines = weekData.slice(0, parseInt(listLength, 10) || 5).reduce((prev, cur, index) => {
     const playCount = cur.playCount;
     const artists = cur.song.ar.map(a => a.name);
