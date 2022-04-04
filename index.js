@@ -91,9 +91,7 @@ const replaceReg = new RegExp(`${startSection}[\\s\\S]+${endSection}`, 'g');
     const readme = Buffer.from(data.content, 'base64').toString();
     const matched_section = readme.match(replaceReg)[0];
     const replace_section = `${startSection}\n${gistLink}\`\`\`text\n${lines}\n\`\`\`\n${footer}${endSection}`;
-    
-    console.log(matched_section, replace_section);
-    console.log(matched_section === replace_section)
+
     if (matched_section === replace_section) {
       console.log('No need to update readme');
       return;
