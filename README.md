@@ -52,9 +52,9 @@
 
     - **UPDATE_README**: 是否更新到README
     
-    - **UPDATE_README_OWNER**: 更新README
+    - **UPDATE_README_OWNER**: 更新README的用户名
 
-    - **UPDATE_README_REPO**: 更新README的仓库
+    - **UPDATE_README_REPO**: 更新README的仓库名
 
 5. 在项目的 `Settings > Secrets` 中创建两个变量 `GH_TOKEN` 和 `USER_TOKEN`，分别为 Github Token 和 网易云音乐用户 Token
 
